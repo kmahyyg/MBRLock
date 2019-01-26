@@ -15,7 +15,7 @@ Note4:
 LenNote4 equ ($-Note4)
 
 TestStr:
-    db "12345678"
+    db "12345678"   ; Test string should be write to FDD,0,0,10
 LenTestStr equ ($-TestStr)
 
 db 0x55,0xAA    ; Buggy Preset
