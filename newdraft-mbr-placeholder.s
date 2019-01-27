@@ -8,21 +8,31 @@
 org 7c00h
 
 sTart:
+    ; show notification
+    push bx
+    mov al,0
+    mov bh,0
+    mov bl,11110000b
+    mov cx,LenNote1
+    mov dx,0
+    push cs
+    pop es
+    mov bp,offset Note1
+    mov ah,13h
+    int 10h
+    jmp getnCheck
 
-
-getInput:
-
-
-checkChoice:
-
+getnCheck:
+    ; get user choice and compare
 
 callEncrypter:
-
+    ; load encrypter
 
 callDecrypter:
-
+    ; load decrypter
 
 callDirectBoot:
+    ; directboot only
 
 
 Note1:
@@ -32,5 +42,4 @@ LenNote1 equ ($-Note1)
 ChoiceSaver:
     db 0
 
-times 510-($-$$) db 0
-db 0x55,0xAA ; Bootable Flag
+times 440-($-$$) db 0
