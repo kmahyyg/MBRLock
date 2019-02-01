@@ -7,7 +7,7 @@
 ; Test String 12345678 will be used for password check.
 ; MBR: Stored in 0,0,3,HDD1
 
-encrypt:
+start:
     ; show hint string
     push bx
     mov ax,1301h
@@ -19,10 +19,30 @@ encrypt:
     pop es
     mov bp,Note1
     int 10h
-    ; get input
+    mov cx,MaxLen
+    cld   ; from left to right
     
+getinput:
+    ; thanks to sunny den
+    ;   get keystroke
+    xor ax,ax   ;ax=0
+    int 16h
+    ;   if 'enter' is pressed, then goto.
+    cmp al,0x0d
+    je encrypt
+    ;   if max length is met, then goto.
+    cmp cx,1
+    je encrypt
+    ;   else, save input to es:di
+    mov di,[Useript]
+    stosb
+    dec cx
+    jmp getinput
+    
+encrypt:
     ; encrypt
     
+finalfin:
     ; encrypt done
     push bx
     mov ax,1301h
@@ -52,12 +72,18 @@ closepc:
 
 ; Data region
 Note1: 
-    db "Encrypt - Input Password: (<= 8 Bytes) "
-LenNote1 equ ($-Note2)
+    db "Encrypt - Input Password: (<= 8 Bytes) ",10,13
+LenNote1 equ ($-Note1)
 
 Note2: 
     db "Encrypt - Done. Halt Now."
-LenNote2 equ ($-Note4)
+LenNote2 equ ($-Note2)
+
+MaxLen:
+    db 9
+    
+Useript:
+    times 9 db 0
 
 ; End of Data Region
 

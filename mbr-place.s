@@ -73,7 +73,7 @@ callDirectBoot:
 
 
 Note1:
-    db "MBR Protect System: 1.Encrypt 2.Decrypt 3.Direct Boot"
+    db "MBR Protect System: 1.Encrypt 2.Decrypt 3.Direct Boot",10,13
 LenNote1 equ ($-Note1)
 
 times 440-($-$$) db 0

@@ -5,11 +5,11 @@
 int 19h ; for reboot
 
 Note2: 
-    db "Input Password: "
+    db "Input Password: ",10,13
 LenNote2 equ ($-Note2)
 
 Note3: 
-    db "Incorrect."
+    db "Incorrect.",10,13
 LenNote3 equ ($-Note3)
 
 Note4: 
@@ -20,7 +20,6 @@ TestStr:
     db "12345678"   ; Test string should be write to FDD,0,0,10
 LenTestStr equ ($-TestStr)
 
-
 ;Padding with 0
 times 512-($-$$) db 0 
-;db 0x55,0xAA    ; Buggy Preset
+
