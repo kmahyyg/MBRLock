@@ -2,6 +2,8 @@
 ; Location: FDD,0,0,1
 
 
+int 19h ; for reboot
+
 Note2: 
     db "Input Password: "
 LenNote2 equ ($-Note2)
