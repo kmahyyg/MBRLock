@@ -63,14 +63,17 @@ encrypt:
     mov cx, MBRLen
     ; Len == 512, > 8 Bits, Fuck
     ;TODO: Encrypt Alg.
-    
+    ; BX == CurrentPasswordLength, CX == MBR Length (512 Bytes - 0x200)
     
     ; Judge and Write
     dec bx
-    cmp bx,0
+    dec cx
+    cmp cx,0
     je writeFinalMBR
+    cmp bx,0
     jmp encrypt
     
+
 writeFinalMBR:
 
      
