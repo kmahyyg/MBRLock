@@ -11,9 +11,17 @@ OffsetofRead equ 8100h
 OffsetofWrite equ 8400h
 
 start:
-    ;TODO: load original MBR
-    
-    
+    ;load original MBR
+    mov ax,0
+    mov es,ax
+    mov bx,OffsetofRead
+    mov al,1
+    mov ch,0
+    mov cl,3
+    mov dh,0
+    mov dl,80
+    mov ah,2
+    int 13h
     ; show hint string
     push bx
     mov ax,1301h
@@ -49,11 +57,11 @@ getinput:
 encrypt:
     ; encrypt
     ; param: es:di,encrypt keys
-    ; param: readMBR into 8100h
-    ; param: encryptedMBR into 8400h
-    mov bx, MBRLen
+    ; param: readMBR into 0x8100
+    ; param: encryptedMBR into 0x8400
+    mov bx, cx
+    mov cx, MBRLen
     ; Len == 512, > 8 Bits, Fuck
-    
     ;TODO: Encrypt Alg.
     
     
