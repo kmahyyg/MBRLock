@@ -7,7 +7,13 @@
 ; Test String 12345678 will be used for password check.
 ; MBR: Stored in 0,0,3,HDD1
 
+OffsetofRead equ 8100h
+OffsetofWrite equ 8400h
+
 start:
+    ;TODO: load original MBR
+    
+    
     ; show hint string
     push bx
     mov ax,1301h
@@ -19,8 +25,9 @@ start:
     pop es
     mov bp,Note1
     int 10h
-    mov cx,MaxLen
     cld   ; from left to right
+    mov di, Useript
+    xor cx,cx
     
 getinput:
     ; thanks to sunny den
@@ -31,17 +38,34 @@ getinput:
     cmp al,0x0d
     je encrypt
     ;   if max length is met, then goto.
-    cmp cx,1
+    cmp cx,MaxPWDLen
     je encrypt
     ;   else, save input to es:di
-    mov di,[Useript]
     stosb
-    dec cx
+    inc cx
+    mov [PWDLen],cx
     jmp getinput
     
 encrypt:
     ; encrypt
+    ; param: es:di,encrypt keys
+    ; param: readMBR into 8100h
+    ; param: encryptedMBR into 8400h
+    mov bx, MBRLen
+    ; Len == 512, > 8 Bits, Fuck
     
+    ;TODO: Encrypt Alg.
+    
+    
+    ; Judge and Write
+    dec bx
+    cmp bx,0
+    je writeFinalMBR
+    jmp encrypt
+    
+writeFinalMBR:
+
+     
 finalfin:
     ; encrypt done
     push bx
@@ -78,12 +102,14 @@ LenNote1 equ ($-Note1)
 Note2: 
     db "Encrypt - Done. Halt Now."
 LenNote2 equ ($-Note2)
-
-MaxLen:
-    db 9
     
 Useript:
     times 9 db 0
+PWDLen:
+    db 0
+
+MaxPWDLen: db 8
+MBRLen: dw 512
 
 ; End of Data Region
 
