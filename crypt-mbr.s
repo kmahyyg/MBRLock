@@ -7,6 +7,9 @@
 ; Test String 12345678 will be used for password check.
 ; MBR: Stored in 0,0,3,HDD1
 
+CPU 486
+BITS 16
+
 OffsetofRead equ 8100h
 OffsetofWrite equ 8400h
 
@@ -35,7 +38,11 @@ start:
     int 10h
     cld   ; from left to right
     mov di, Useript
-    xor cx,cx
+    push di
+    mov di, Useript
+    xor cx,cx  ; clear cx
+    xor bx,bx  ; clear bx
+    mov si, OffsetofRead
     
 getinput:
     ; thanks to sunny den
@@ -59,20 +66,37 @@ encrypt:
     ; param: es:di,encrypt keys
     ; param: readMBR into 0x8100
     ; param: encryptedMBR into 0x8400
-    mov bx, cx
-    mov cx, MBRLen
+    mov bx, cx   ; PWD length
+    mov cx, MBRLen   ; MBR length
     ; Len == 512, > 8 Bits, Fuck
     ;TODO: Encrypt Alg.
-    
-    
+    xor [si],di
+    inc di
+    inc si
     ; Judge and Write
+    dec cx
+    cmp cx,1
+    je writeFinalMBR
     dec bx
     cmp bx,0
-    je writeFinalMBR
+    je resetPWDStat
     jmp encrypt
+
+resetPWDStat:
+    mov cx,PWDLen
+    ret
     
 writeFinalMBR:
-
+    mov ax,0
+    mov es,ax
+    mov bx,OffsetofRead
+    mov al,1
+    mov ch,0
+    mov cl,1
+    mov dh,0
+    mov dl,80
+    mov ah,3
+    int 13h
      
 finalfin:
     ; encrypt done
