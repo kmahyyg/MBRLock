@@ -74,6 +74,7 @@ encrypt:
     inc di
     inc si
     ; Judge and Write
+    ; BX == CurrentPasswordLength, CX == MBR Length (512 Bytes - 0x200)
     dec cx
     cmp cx,1
     je writeFinalMBR
