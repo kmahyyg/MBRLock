@@ -11,7 +11,7 @@ pattable:
 	
 asmc:
 	echo "Compiling assembly code using NASM..."
-	nasm crypt-mbr.s
+	nasm encrypt-mbr.s
 	nasm mbr-place.s
 	nasm decrypt-mbr.s
 	nasm teststr.s
@@ -23,7 +23,7 @@ vfdc:
 	
 clean:
 	echo "Cleaning up..."
-	rm mbr-place crypt-mbr teststr decrypt-mbr pattable mbr_ori prod.mbr $(FLOPPY_IMG) $(PRODUCT_VM_IMG)
+	rm mbr-place encrypt-mbr teststr decrypt-mbr pattable mbr_ori prod.mbr $(FLOPPY_IMG) $(PRODUCT_VM_IMG)
 	
 writedata:
 	echo "Writing data to product image..."
@@ -35,7 +35,7 @@ writedata:
 	# Write TESTSTR to FDD 1,0,0,4
 	dd if=teststr of=$(FLOPPY_IMG) bs=512 skip=3 count=1 conv=notrunc
 	# Write Encryptor to FDD 1,0,0,1
-	dd if=crypt-mbr of=$(FLOPPY_IMG) bs=512 skip=0 count=1 conv=notrunc
+	dd if=encrypt-mbr of=$(FLOPPY_IMG) bs=512 skip=0 count=1 conv=notrunc
 	# Write Decryptor to FDD 1,0,0,2
 	dd if=decrypt-mbr of=$(FLOPPY_IMG) bs=512 skip=1 count=1 conv=notrunc
 	# Write OriginalMBR for preparation, HDD 1,0,0,3

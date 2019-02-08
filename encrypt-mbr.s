@@ -69,7 +69,7 @@ encrypt:
     mov bx, cx   ; PWD length
     mov cx, MBRLen   ; MBR length
     ; Len == 512, > 8 Bits, Fuck
-    ;TODO: Encrypt Alg.
+    ; BUG: Encrypt Alg.
     xor [si],di
     inc di
     inc si
