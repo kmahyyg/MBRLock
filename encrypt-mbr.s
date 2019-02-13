@@ -1,5 +1,5 @@
 ; This file is responsible for get input and Encrypt Data
-; Location: FDD,0,0,2
+; Location: FDD 1,0,0,1
 ; initial input:     decrypt 1 / encrypt 0
 ; initial input:     password (len<=8)  512/8=64
 ;     Note: if first method bit is input wrongly, MBR will encrypted twice.
@@ -26,7 +26,7 @@ start:
     mov ah,2
     int 13h
     ; show hint string
-    push bx
+    xor bx,bx
     mov ax,1301h
     mov bh,0
     mov bl,11110000b
@@ -39,7 +39,6 @@ start:
     cld   ; from left to right
     mov di, Useript
     push di
-    mov di, Useript
     xor cx,cx  ; clear cx
     xor bx,bx  ; clear bx
     mov si, OffsetofRead
@@ -58,6 +57,7 @@ getinput:
     ;   else, save input to es:di
     stosb
     inc cx
+    push cx
     mov [PWDLen],cx
     jmp getinput
     
@@ -69,7 +69,7 @@ encrypt:
     mov bx, cx   ; PWD length
     mov cx, MBRLen   ; MBR length
     ; Len == 512, > 8 Bits, Fuck
-    ; BUG: Encrypt Alg.
+    ; ENHANCEMENT REQUIRED FOR FUTURE: Encrypt Alg.
     xor [si],di
     inc di
     inc si
@@ -77,21 +77,50 @@ encrypt:
     ; BX == CurrentPasswordLength, CX == MBR Length (512 Bytes - 0x200)
     dec cx
     cmp cx,1
-    je encryptTeststr
+    je preencryptTeststr
     dec bx
     cmp bx,0
     je resetPWDStat
     jmp encrypt
 
+preencryptTeststr:
+    ; the code above using dec and pwdlen to save the length
+    ; however, it cost extra storage and stack storage used in getipt
+    ; Now you just need to pop it out for magically save
+    xor bx,bx
+    xor di,di
+    xor si,si
+    mov bx,LenTestStr
+    mov di, Useript
+    mov si, TestStr
+    cld
+    call encryptTeststr
+
 encryptTeststr:
-    ;todo
-    dec cx
-    cmp cx,1
-    je writeFinalMBR
-    
+    pop cx
+    cmp cx,0
+    je writeENCteststr
+    xor si,di
+    inc si
+    inc di
+    jmp encryptTeststr
+
 resetPWDStat:
     mov cx,PWDLen
     ret
+    
+writeENCteststr:
+    mov ax,0
+    mov es,ax
+    mov bx,TestStr
+    mov al,1
+    mov ch,0
+    mov cl,1
+    mov dh,0
+    mov dl,0
+    mov ah,4
+    int 13h
+    jmp writeFinalMBR
     
 writeFinalMBR:
     mov ax,0
@@ -104,6 +133,7 @@ writeFinalMBR:
     mov dl,80
     mov ah,3
     int 13h
+    jmp finalfin
      
 finalfin:
     ; encrypt done
@@ -134,6 +164,7 @@ closepc:
     int 15h
 
 ; Data region
+
 Note1: 
     db "Encrypt - Input Password: (<= 8 Bytes) ",10,13
 LenNote1 equ ($-Note1)
@@ -142,17 +173,17 @@ Note2:
     db "Encrypt - Done. Halt Now."
 LenNote2 equ ($-Note2)
     
-Useript:
-    times 9 db 0
-PWDLen:
-    db 0
-
-MaxPWDLen: equ 8
-MBRLen: equ 512
-
 TestStr:
     db "12345678"   ; Test string should be write to FDD1,0,0,4
 LenTestStr equ ($-TestStr)
+
+Useript: times 9 db 0
+
+PWDLen: db 0
+
+MaxPWDLen: equ 8
+
+MBRLen: equ 512
 
 ; End of Data Region
 

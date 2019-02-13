@@ -1,5 +1,5 @@
 ; This file is responsible for get input and Decrypt Data.
-; Location: FDD,0,0,1
+; Location: FDD 1,0,0,2
 
 CPU 486
 BITS 16

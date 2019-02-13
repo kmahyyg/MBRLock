@@ -1,6 +1,6 @@
 ; New empty MBR for initialize Protect System
 ; This file is responsible for get input and test password, if Passed, Goto Decrypt.
-; Location: MBR, HDD, 0,0,1
+; Location: MBR, HDD 1, 0,0,1
 ; 
 ; CAUTION: THE DATA WILL NOT BE RECOVEABLE, PLEASE USE IT AT YOUR OWN RISK.
 
@@ -67,7 +67,7 @@ callDirectBoot:
     mov dl,80h   ; drive no.
     mov dh,0   ; cylinder
     mov ch,0   ; track
-    mov cl,3   ; sector
+    mov cl,3   ; sector, DO NOT USE 1!
     int 13h
     jmp OffsetOfNext
 
