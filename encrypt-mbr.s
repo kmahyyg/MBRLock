@@ -11,7 +11,7 @@ CPU 486
 BITS 16
 
 OffsetofRead equ 8100h
-OffsetofWrite equ 8400h
+OffsetofWrite equ 8500h
 
 start:
     ;load original MBR
@@ -77,12 +77,18 @@ encrypt:
     ; BX == CurrentPasswordLength, CX == MBR Length (512 Bytes - 0x200)
     dec cx
     cmp cx,1
-    je writeFinalMBR
+    je encryptTeststr
     dec bx
     cmp bx,0
     je resetPWDStat
     jmp encrypt
 
+encryptTeststr:
+    ;todo
+    dec cx
+    cmp cx,1
+    je writeFinalMBR
+    
 resetPWDStat:
     mov cx,PWDLen
     ret
@@ -141,8 +147,12 @@ Useript:
 PWDLen:
     db 0
 
-MaxPWDLen: db 8
-MBRLen: dw 512
+MaxPWDLen: equ 8
+MBRLen: equ 512
+
+TestStr:
+    db "12345678"   ; Test string should be write to FDD1,0,0,4
+LenTestStr equ ($-TestStr)
 
 ; End of Data Region
 
