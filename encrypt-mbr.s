@@ -128,7 +128,7 @@ writeFinalMBR:
     mov bx,OffsetofRead
     mov al,1
     mov ch,0
-    mov cl,1
+    mov cl,3
     mov dh,0
     mov dl,80
     mov ah,3

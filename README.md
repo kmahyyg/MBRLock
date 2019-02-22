@@ -2,6 +2,10 @@
 
 A super-big homework for assembly language lesson.
 
+# STATUS
+
+**Already Deprecated**
+
 ## Project Documentation
 
 More details will be written to my blog, [Click Here.](https://www.kmahyyg.xyz/2019/ASM-BigHomework/)
